@@ -1,16 +1,23 @@
-<!-- adapted from Academind course project -->
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <div class="clearfix">
-        <h2>Contacts</h2> <a class="btn btn-primary pull-right" cursor="pointer">New Contact</a></div>
+<div class="panel">
+  <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ccc; background-color: #f0f0f0;">
+    <h2 style="margin: 0;">Contacts</h2>
+    <a href="#" class="btn btn-success">Create New Contact</a>
+  </div>
+  <div class="panel-body" style="padding: 10px;">
+    <div class="list-group">
+      <a
+        href="#"
+        class="list-group-item list-group-item-action"
+        *ngFor="let contact of contacts"
+        style="display: flex; align-items: center; justify-content: space-between; width: 100%;"
+      >
+        <span>{{ contact.name }}</span>
+        <img
+          [src]="contact.imageUrl"
+          alt="{{ contact.name }}"
+          style="width: 50px; height: auto;"
+        />
+      </a>
     </div>
-  <div class="panel-body">
-    <div class="col-xs-12">
-        <cms-contact-item
-        *ngFor="let contactEl of contacts" 
-        [contact]="contactEl"
-        (click)="onSelected(contactEl)"
-        ></cms-contact-item>
-    </div>
-</div>
+  </div>
 </div>

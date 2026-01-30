@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { Contact } from './contact.model';
+import { ContactList } from './contact-list/contact-list';
+import { ContactDetail } from './contact-detail/contact-detail';
 
 @Component({
   selector: 'cms-contacts',
-  standalone: false,
   templateUrl: './contacts.html',
-  styleUrl: './contacts.css',
+  styleUrls: ['./contacts.css'],
+  imports: [ContactList, ContactDetail] 
 })
-export class Contacts {
-  selectedContact: Contact;
-}
+export class Contacts {}

@@ -1,13 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { Contact } from '../contact.model'
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'cms-contact-detail',
-  standalone: false,
+  imports: [],
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.css',
 })
 export class ContactDetail {
-  @Input() selectedContact: Contact;
 
 }

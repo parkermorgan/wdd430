@@ -1,16 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+import { Header } from './header';
+import { Contacts } from './contacts/contacts';
 
 @Component({
-  selector: 'cms-root',
+  selector: 'app-root',
   templateUrl: './app.html',
-  standalone: false,
-  styleUrl: './app.css'
+  imports: [Header,Contacts], // <-- import the standalone component here
+  standalone: true
 })
-export class App {
-  protected readonly title = signal('cms');
-  selectedFeature: string = 'documents';
+export class App {}
 
-  switchView(selectedFeature: string) {
-    this.selectedFeature = selectedFeature;
-  }
-}
+bootstrapApplication(App);
