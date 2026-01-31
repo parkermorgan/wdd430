@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 interface Contact {
   id: string;
@@ -12,11 +11,11 @@ interface Contact {
 
 @Component({
   selector: 'cms-contact-list',
+  standalone: false,
   templateUrl: './contact-list.html',
-  styleUrls: ['./contact-list.css'],
-  standalone: true,
-  imports: [CommonModule]
+  styleUrl: './contact-list.css',
 })
+
 export class ContactList {
   contacts: Contact[] = [
     {

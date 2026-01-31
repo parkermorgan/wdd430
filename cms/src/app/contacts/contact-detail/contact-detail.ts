@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'cms-contact-detail',
-  imports: [],
+  standalone: false,
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.css',
 })
