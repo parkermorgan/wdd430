@@ -1,5 +1,5 @@
 {
-  "name": "wdd430-app",
+  "name": "wdd-430",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -29,7 +29,7 @@
     "@angular/forms": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^3.4.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

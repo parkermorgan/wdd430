@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "wdd430-app": {
+    "WDD-430": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -68,10 +68,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "wdd430-app:build:production"
+              "buildTarget": "WDD-430:build:production"
             },
             "development": {
-              "buildTarget": "wdd430-app:build:development"
+              "buildTarget": "WDD-430:build:development"
             }
           },
           "defaultConfiguration": "development"
