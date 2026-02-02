@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
-interface Contact {
-  id: string;
+export interface Contact {
+  id: number;
   name: string;
   email: string;
   phone: string;
@@ -17,9 +17,11 @@ interface Contact {
 })
 
 export class ContactList {
+  @Output() selectedContactEvent = new EventEmitter<Contact>();
+
   contacts: Contact[] = [
     {
-      id: '1',
+      id: 1,
       name: 'R. Kent Jackson',
       email: 'jacksonk@byui.edu',
       phone: '208-496-3771',
@@ -27,7 +29,7 @@ export class ContactList {
       group: null
     },
     {
-      id: '2',
+      id: 2,
       name: 'Rex Barzee',
       email: 'barzeer@byui.edu',
       phone: '208-496-3768',
@@ -35,4 +37,8 @@ export class ContactList {
       group: null
     }
   ];
+
+  onSelected(contact: Contact) {
+    this.selectedContactEvent.emit(contact);
+  }
 }
