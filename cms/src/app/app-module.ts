@@ -10,7 +10,7 @@ import { ContactItem } from './contacts/contact-item/contact-item';
 import { Documents } from './documents/documents';
 import { DocumentItem } from './documents/document-item/document-item';
 import { DocumentDetail } from './documents/document-detail/document-detail';
-import { DocumentList } from './documents/document-list/document-list';
+import { DocumentListComponent } from './documents/document-list/document-list';
 import { Messages } from './messages/messages';
 import { MessageItem } from './messages/message-item/message-item';
 import { MessageEdit } from './messages/message-edit/message-edit';
@@ -28,7 +28,7 @@ import { DropdownDirective } from './shared/dropdown';
     Documents,
     DocumentItem,
     DocumentDetail,
-    DocumentList,
+    DocumentListComponent,
     Messages,
     MessageItem,
     MessageEdit,
@@ -36,7 +36,7 @@ import { DropdownDirective } from './shared/dropdown';
   ],
   imports: [
     BrowserModule,
-    DropdownDirective
+    DropdownDirective,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
