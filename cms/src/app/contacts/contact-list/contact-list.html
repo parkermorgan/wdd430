@@ -6,7 +6,6 @@
   <div class="panel-body" style="padding: 10px;">
     <div class="list-group">
 
-      <!-- Render groups first -->
       <div *ngFor="let contact of contacts">
         <div *ngIf="contact.group && contact.group.length > 0" class="list-group-item">
           {{ contact.name }}
@@ -19,7 +18,6 @@
         </cms-contact-item>
       </div>
 
-      <!-- Render top-level individual contacts (not in any group) -->
       <div *ngFor="let contact of contacts">
         <cms-contact-item 
           *ngIf="!contact.group || contact.group.length === 0"
