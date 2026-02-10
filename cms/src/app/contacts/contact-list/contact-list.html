@@ -1,30 +1,31 @@
 <div class="panel">
   <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ccc; background-color: #f0f0f0;">
     <h2 style="margin: 0;">Contacts</h2>
-    <a href="#" class="btn btn-success">Create New Contact</a>
+    <a class="btn btn-success" [routerLink]="['new']">Create New Contact</a>
   </div>
   <div class="panel-body" style="padding: 10px;">
     <div class="list-group">
 
+      <!-- Grouped contacts -->
       <div *ngFor="let contact of contacts">
         <div *ngIf="contact.group && contact.group.length > 0" class="list-group-item">
           {{ contact.name }}
         </div>
 
-        <cms-contact-item 
-          *ngFor="let member of contact.group" 
-          [contact]="member"
-          (click)="onSelected(member)">
-        </cms-contact-item>
+        <ng-container *ngFor="let member of contact.group">
+          <cms-contact-item 
+            *ngIf="isMemberActive(member)"
+            [contact]="member">
+          </cms-contact-item>
+        </ng-container>
       </div>
 
-      <div *ngFor="let contact of contacts">
+      <ng-container *ngFor="let contact of contacts">
         <cms-contact-item 
           *ngIf="!contact.group || contact.group.length === 0"
-          [contact]="contact"
-          (click)="onSelected(contact)">
+          [contact]="contact">
         </cms-contact-item>
-      </div>
+      </ng-container>
 
     </div>
   </div>

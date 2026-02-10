@@ -6,9 +6,8 @@ import { ContactService } from '../contact';
   selector: 'cms-contact-list',
   standalone: false,
   templateUrl: './contact-list.html',
-  styleUrl: './contact-list.css',
+  styleUrls: ['./contact-list.css'],
 })
-
 export class ContactList implements OnInit {
   contacts: Contact[] = [];
 
@@ -16,9 +15,15 @@ export class ContactList implements OnInit {
 
   ngOnInit() {
     this.contacts = this.contactService.getContacts();
+
+    this.contactService.contactChangedEvent.subscribe((contacts: Contact[]) => {
+      this.contacts = contacts;
+    });
+    
   }
 
-  onSelected(contact: Contact) {
-    this.contactService.contactSelectedEvent.emit(contact);
+  isMemberActive(member: Contact): boolean {
+    return this.contacts.some(c => c.id === member.id);
   }
+  
 }
