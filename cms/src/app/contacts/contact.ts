@@ -55,21 +55,31 @@ export class ContactService {
   }
 
   updateContact(originalContact: Contact, newContact: Contact): void {
-    if (!originalContact || !newContact) {
-      return;
-    }
-
-    const pos = this.contacts.indexOf(originalContact);
-    if (pos < 0) {
-      return;
-    }
-
-    newContact.id = originalContact.id;
-    this.contacts[pos] = newContact;
-
-    const contactsListClone = this.contacts.slice();
-    this.contactListChangedEvent.next(contactsListClone);
+  if (!originalContact || !newContact) {
+    return;
   }
+
+  const pos = this.contacts.findIndex(c => c.id === originalContact.id);
+  if (pos < 0) {
+    return;
+  }
+
+  newContact.id = originalContact.id;
+  this.contacts[pos] = newContact;
+
+  // update references to this contact inside other contacts' group arrays
+  this.contacts.forEach(contact => {
+    if (contact.group) {
+      const groupPos = contact.group.findIndex(m => m.id === originalContact.id);
+      if (groupPos >= 0) {
+        contact.group[groupPos] = newContact;
+      }
+    }
+  });
+
+  const contactsListClone = this.contacts.slice();
+  this.contactListChangedEvent.next(contactsListClone);
+}
 
   deleteContact(contact: Contact): void {
     if (!contact) {
