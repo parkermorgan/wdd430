@@ -8,10 +8,9 @@
   <div class="panel-body">
     <div class="center-panel">
       <cms-document-item
-        *ngFor="let doc of documents"
+        *ngFor="let doc of documentService.documentListChangedEvent | async"
         [document]="doc">
       </cms-document-item>
     </div>
   </div>
-
 </div>

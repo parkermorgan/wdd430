@@ -1,32 +1,39 @@
 <div class="panel">
-  <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ccc; background-color: #f0f0f0;">
-    <h2 style="margin: 0;">Contacts</h2>
-    <a class="btn btn-success" [routerLink]="['new']">Create New Contact</a>
+  <div class="panel-heading" style="border-bottom: 1px solid #ccc; background-color: #f0f0f0;">
+    <div class="row">
+      <span class="title pad-left-right">Contacts</span>
+    </div>
+    <div class="row">
+      <div class="input-group pull-left pad-left-right col-xs-7">
+        <input 
+          type="text" 
+          #searchBox
+          class="form-control"
+          placeholder="Enter a search value"
+          (keyup)="search(searchBox.value)">
+        <div class="glyphicon glyphicon-search input-group-addon" (click)="search(searchBox.value)"></div>
+      </div>
+      <div class="pull-right pad-left-right">
+        <a class="btn btn-success" [routerLink]="['new']">New Contact</a>
+      </div>
+    </div>
   </div>
   <div class="panel-body" style="padding: 10px;">
     <div class="list-group">
-
-      <!-- Grouped contacts -->
-      <div *ngFor="let contact of contacts">
-        <div *ngIf="contact.group && contact.group.length > 0" class="list-group-item">
-          {{ contact.name }}
-        </div>
-
-        <ng-container *ngFor="let member of contact.group">
-          <cms-contact-item 
-            *ngIf="isMemberActive(member)"
-            [contact]="member">
-          </cms-contact-item>
+      <ng-container *ngFor="let contact of (term ? filteredContacts : (contactService.contactListChangedEvent | async))">
+        <ng-container *ngIf="contact.group && contact.group.length > 0">
+          <cms-contact-item [contact]="contact"></cms-contact-item>
+          <ng-container *ngIf="!term">
+            <ng-container *ngFor="let member of contact.group">
+              <cms-contact-item [contact]="member"></cms-contact-item>
+            </ng-container>
+          </ng-container>
         </ng-container>
-      </div>
 
-      <ng-container *ngFor="let contact of contacts">
-        <cms-contact-item 
-          *ngIf="!contact.group || contact.group.length === 0"
-          [contact]="contact">
-        </cms-contact-item>
+        <ng-container *ngIf="!contact.group || contact.group.length === 0">
+          <cms-contact-item [contact]="contact"></cms-contact-item>
+        </ng-container>
       </ng-container>
-
     </div>
   </div>
 </div>
