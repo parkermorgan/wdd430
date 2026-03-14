@@ -4,6 +4,7 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 var index = require('./server/routes/app');
 const messageRoutes = require('./server/routes/messages');
@@ -45,3 +46,7 @@ const server = http.createServer(app);
 server.listen(port, function() {
   console.log('API running on localhost: ' + port)
 });
+
+mongoose.connect('mongodb://localhost:27017/cms')
+   .then(() => console.log('Connected to database!'))
+   .catch(err => console.log('Connection failed: ' + err));

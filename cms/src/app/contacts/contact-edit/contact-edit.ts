@@ -50,6 +50,7 @@ export class ContactEdit implements OnInit {
     const value = form.value;
     const newContact = new Contact(
       '',
+      '',
       value.name,
       value.email,
       value.phone,

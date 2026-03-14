@@ -18,9 +18,14 @@ export class MessageItem implements OnInit, OnDestroy {
   constructor(private contactService: ContactService, private cdr: ChangeDetectorRef) {}
 
   getSenderName(): void {
-    const contact: Contact | null = this.contactService.getContact(this.message.sender);
-    this.messageSender = contact?.name ?? this.message.sender;
+  const sender = this.message.sender;
+  if (sender && typeof sender === 'object') {
+    this.messageSender = (sender as any).name ?? 'Unknown';
+  } else {
+    const contact = this.contactService.contacts.find(c => c._id === sender);
+    this.messageSender = contact?.name ?? sender;
   }
+}
 
   ngOnInit() {
     this.getSenderName();

@@ -12,7 +12,7 @@ export class MessageEdit {
   @ViewChild('subject') subjectInput!: ElementRef;
   @ViewChild('msgText') msgTextInput!: ElementRef;
 
-  currentSender: string = 'Parker Morgan'; 
+  currentSender: string = '69b5b32758a4b3aba9b8ce34'; 
 
   constructor(private messageService: MessageService) {}
 
@@ -21,6 +21,7 @@ export class MessageEdit {
     const msgText = this.msgTextInput.nativeElement.value;
 
     const newMessage: Message = {
+      _id: '',
       id: '1', 
       sender: this.currentSender,
       subject: subject,

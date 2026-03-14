@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Document } from './document.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -13,38 +13,26 @@ export class DocumentService {
   public documentListChangedEvent = new BehaviorSubject<Document[]>([]);
   public maxDocumentId: number = 0;
 
-  private url = 'https://pjmcms-default-rtdb.firebaseio.com/documents.json';
-
   constructor(private http: HttpClient) {
     console.log('service created');
     this.getDocuments();
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-    for (let document of this.documents) {
-      const currentId = parseInt(document.id, 10);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-    return maxId;
+  sortAndSend() {
+    this.documents.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+    this.documentListChangedEvent.next(this.documents.slice());
   }
 
   getDocuments(): void {
-    console.log('getDocuments called');
-    this.http.get<Document[]>(this.url)
+    this.http.get<{ message: string, obj: Document[] }>('http://localhost:3000/documents')
       .subscribe(
-        (documents: Document[]) => {
-          console.log('documents received:', documents);
-          this.documents = documents || [];
-          this.maxDocumentId = this.getMaxId();
-          this.documents.sort((a, b) => {
-            if (a.name < b.name) return -1;
-            if (a.name > b.name) return 1;
-            return 0;
-          });
-          this.documentListChangedEvent.next(this.documents.slice());
+        (responseData) => {
+          this.documents = responseData.obj;
+          this.sortAndSend();
         },
         (error: any) => {
           console.log(error);
@@ -57,49 +45,67 @@ export class DocumentService {
     return document || null;
   }
 
-  saveDocuments(): void {
-    this.documentListChangedEvent.next(this.documents.slice());
-    this.http.put(this.url, this.documents)
-      .subscribe(
-        () => {},
-        (error: any) => {
-          console.log(error);
-        }
-      );
-  }
-
-  addDocument(newDocument: Document): void {
-    if (!newDocument) {
+  addDocument(document: Document): void {
+    if (!document) {
       return;
     }
-    this.maxDocumentId++;
-    newDocument.id = this.maxDocumentId.toString();
-    this.documents.push(newDocument);
-    this.saveDocuments();
+
+    document.id = '';
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post<{ message: string, document: Document }>('http://localhost:3000/documents',
+      document,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          this.documents.push(responseData.document);
+          this.sortAndSend();
+        }
+      );
   }
 
   updateDocument(originalDocument: Document, newDocument: Document): void {
     if (!originalDocument || !newDocument) {
       return;
     }
+
     const pos = this.documents.findIndex(d => d.id === originalDocument.id);
     if (pos < 0) {
       return;
     }
+
     newDocument.id = originalDocument.id;
-    this.documents[pos] = newDocument;
-    this.saveDocuments();
+    newDocument._id = originalDocument._id;
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.put('http://localhost:3000/documents/' + originalDocument.id,
+      newDocument, { headers: headers })
+      .subscribe(
+        (response: any) => {
+          this.documents[pos] = newDocument;
+          this.sortAndSend();
+        }
+      );
   }
 
   deleteDocument(document: Document): void {
     if (!document) {
       return;
     }
+
     const pos = this.documents.findIndex(d => d.id === document.id);
     if (pos < 0) {
       return;
     }
-    this.documents.splice(pos, 1);
-    this.saveDocuments();
+
+    this.http.delete('http://localhost:3000/documents/' + document.id)
+      .subscribe(
+        (response: any) => {
+          this.documents.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
   }
 }

@@ -1,39 +1,24 @@
 import { Message } from './message.model';
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
   public messages: Message[] = [];
-  public maxMessageId: number = 0;
   messageChangedEvent = new BehaviorSubject<Message[]>([]);
-
-  private url = 'https://pjmcms-default-rtdb.firebaseio.com/messages.json';
 
   constructor(private http: HttpClient) {
     this.getMessages();
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-    for (let message of this.messages) {
-      const currentId = parseInt(message.id, 10);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-    return maxId;
-  }
-
   getMessages(): void {
-    this.http.get<Message[]>(this.url)
+    this.http.get<{ message: string, obj: Message[] }>('http://localhost:3000/messages')
       .subscribe(
-        (messages: Message[]) => {
-          this.messages = messages || [];
-          this.maxMessageId = this.getMaxId();
+        (responseData) => {
+          this.messages = responseData.obj;
           this.messageChangedEvent.next(this.messages.slice());
         },
         (error: any) => {
@@ -47,21 +32,67 @@ export class MessageService {
     return message || null;
   }
 
-  storeMessages(): void {
-    this.messageChangedEvent.next(this.messages.slice());
-    this.http.put(this.url, this.messages)
+  addMessage(message: Message) {
+    if (!message) {
+      return;
+    }
+
+    message.id = '';
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post<{ message: string, obj: Message }>('http://localhost:3000/messages',
+      message,
+      { headers: headers })
       .subscribe(
-        () => {},
-        (error: any) => {
-          console.log(error);
+        (responseData) => {
+          this.messages.push(responseData.obj);
+          this.messageChangedEvent.next(this.messages.slice());
         }
       );
   }
 
-  addMessage(message: Message) {
-    this.maxMessageId++;
-    message.id = this.maxMessageId.toString();
-    this.messages.push(message);
-    this.storeMessages();
+  updateMessage(originalMessage: Message, newMessage: Message): void {
+    if (!originalMessage || !newMessage) {
+      return;
+    }
+
+    const pos = this.messages.findIndex(m => m.id === originalMessage.id);
+    if (pos < 0) {
+      return;
+    }
+
+    newMessage.id = originalMessage.id;
+    newMessage._id = originalMessage._id;
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.put('http://localhost:3000/messages/' + originalMessage.id,
+      newMessage, { headers: headers })
+      .subscribe(
+        (response: any) => {
+          this.messages[pos] = newMessage;
+          this.messageChangedEvent.next(this.messages.slice());
+        }
+      );
+  }
+
+  deleteMessage(message: Message): void {
+    if (!message) {
+      return;
+    }
+
+    const pos = this.messages.findIndex(m => m.id === message.id);
+    if (pos < 0) {
+      return;
+    }
+
+    this.http.delete('http://localhost:3000/messages/' + message.id)
+      .subscribe(
+        (response: any) => {
+          this.messages.splice(pos, 1);
+          this.messageChangedEvent.next(this.messages.slice());
+        }
+      );
   }
 }
